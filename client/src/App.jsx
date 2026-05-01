@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Dashboard from './pages/Dashboard';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -22,7 +23,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={
             <PrivateRoute>
-              <div>Dashboard - Coming Soon</div>
+              <Dashboard />
             </PrivateRoute>
           } />
           <Route path="/clients" element={
@@ -33,6 +34,11 @@ function App() {
           <Route path="/invoices" element={
             <PrivateRoute>
               <div>Invoices - Coming Soon</div>
+            </PrivateRoute>
+          } />
+          <Route path="/invoices/new" element={
+            <PrivateRoute>
+              <div>New Invoice - Coming Soon</div>
             </PrivateRoute>
           } />
           <Route path="*" element={<Navigate to="/login" />} />
