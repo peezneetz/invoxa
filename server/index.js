@@ -5,12 +5,21 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const clientRoutes = require('./routes/clients');
 const invoiceRoutes = require('./routes/invoices');
-const { createTables } = require('./db/migrate');
+const migrate = require('./db/migrate');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://invoxa-eta.vercel.app',
+    process.env.CLIENT_URL,
+  ],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
@@ -30,7 +39,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-createTables().then(() => {
+migrate.createTables().then(() => {
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
