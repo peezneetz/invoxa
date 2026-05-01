@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
+import Invoices from './pages/Invoices';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -34,7 +35,7 @@ function App() {
           } />
           <Route path="/invoices" element={
             <PrivateRoute>
-              <div>Invoices - Coming Soon</div>
+              <Invoices />
             </PrivateRoute>
           } />
           <Route path="/invoices/new" element={
