@@ -4,6 +4,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const clientRoutes = require('./routes/clients');
+const invoiceRoutes = require('./routes/invoices');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.get('/api/health', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
+app.use('/api/invoices', invoiceRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
