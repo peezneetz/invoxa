@@ -37,8 +37,9 @@ const register = async (req, res) => {
 
     res.status(201).json({ token, user });
   } catch (err) {
-    console.error('Register error:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Register error full:', JSON.stringify(err, null, 2));
+    console.error('Register error message:', err.message);
+    res.status(500).json({ error: 'Server error', detail: err.message });
   }
 };
 
@@ -82,8 +83,8 @@ const login = async (req, res) => {
       }
     });
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Login error:', err.message);
+    res.status(500).json({ error: 'Server error', detail: err.message });
   }
 };
 
