@@ -12,8 +12,6 @@ const createTables = async () => {
         created_at    TIMESTAMP DEFAULT NOW()
       );
     `);
-    console.log('users table created');
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS clients (
         id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -25,8 +23,6 @@ const createTables = async () => {
         created_at TIMESTAMP DEFAULT NOW()
       );
     `);
-    console.log('clients table created');
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS invoices (
         id             UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -42,8 +38,6 @@ const createTables = async () => {
         created_at     TIMESTAMP DEFAULT NOW()
       );
     `);
-    console.log('invoices table created');
-
     await pool.query(`
       CREATE TABLE IF NOT EXISTS invoice_items (
         id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -53,14 +47,12 @@ const createTables = async () => {
         unit_price  NUMERIC(12, 2) NOT NULL
       );
     `);
-    console.log('invoice_items table created');
-
-    console.log('All tables created successfully');
-    process.exit(0);
+    console.log('Database tables ready');
+    return true;
   } catch (err) {
     console.error('Migration error:', err);
-    process.exit(1);
+    throw err;
   }
 };
 
-createTables();
+module.exports = { createTables };
