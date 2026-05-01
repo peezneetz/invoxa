@@ -3,6 +3,7 @@ import { AuthProvider, useAuth } from './hooks/useAuth';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import Clients from './pages/Clients';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -28,7 +29,7 @@ function App() {
           } />
           <Route path="/clients" element={
             <PrivateRoute>
-              <div>Clients - Coming Soon</div>
+              <Clients />
             </PrivateRoute>
           } />
           <Route path="/invoices" element={
