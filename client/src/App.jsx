@@ -5,6 +5,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Clients from './pages/Clients';
 import Invoices from './pages/Invoices';
+import NewInvoice from './pages/NewInvoice';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -40,7 +41,7 @@ function App() {
           } />
           <Route path="/invoices/new" element={
             <PrivateRoute>
-              <div>New Invoice - Coming Soon</div>
+              <NewInvoice />
             </PrivateRoute>
           } />
           <Route path="*" element={<Navigate to="/login" />} />
