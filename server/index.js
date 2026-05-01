@@ -5,6 +5,7 @@ require('dotenv').config();
 const authRoutes = require('./routes/auth');
 const clientRoutes = require('./routes/clients');
 const invoiceRoutes = require('./routes/invoices');
+const { createTables } = require('./db/migrate');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -29,8 +30,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+createTables().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
 });
-
-module.exports = app;
