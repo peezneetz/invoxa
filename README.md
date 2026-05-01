@@ -1,16 +1,11 @@
-# Invoxa 🧾
+# Invoxa
 
-> A full-stack invoice management web app for freelancers and small businesses.
+A full-stack invoice management web app for freelancers and small businesses.
 
-![Status](https://img.shields.io/badge/status-live-brightgreen)
-![Stack](https://img.shields.io/badge/stack-React%20%7C%20Node.js%20%7C%20PostgreSQL-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+## Live Demo
 
-## What is Invoxa?
-
-Invoxa is a business web application that lets freelancers and small business owners create, send, and track invoices. Built with a clean React frontend and a Node.js/PostgreSQL backend, it covers the full workflow from client management to payment tracking.
-
-Built by Carter — self-taught full-stack developer based in Nairobi, Kenya.
+- Frontend: https://invoxa-eta.vercel.app
+- API: https://invoxa-3sfx.onrender.com/api/health
 
 ## Features
 
@@ -25,22 +20,44 @@ Built by Carter — self-taught full-stack developer based in Nairobi, Kenya.
 
 ## Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React, React Router, Tailwind CSS, Lucide Icons |
-| Backend | Node.js, Express.js |
-| Database | PostgreSQL |
-| Auth | JWT + bcrypt |
-| Validation | express-validator |
-| Deployment | Vercel (client) + Railway (server) |
+- Frontend: React, React Router, Tailwind CSS, Lucide Icons
+- Backend: Node.js, Express.js
+- Database: PostgreSQL
+- Auth: JWT + bcrypt
+- Validation: express-validator
+- Deployment: Vercel and Render
 
-## Project Structure
+## Getting Started
 
-cat > .gitignore << 'EOF'
-node_modules/
-.env
-dist/
-build/
-.DS_Store
-*.log
-.vite/
+git clone https://github.com/Carter254g/invoxa.git
+cd invoxa
+cd server && npm install && npm run migrate
+cd ../client && npm install && npm run dev
+
+## API Endpoints
+
+POST   /api/auth/register
+POST   /api/auth/login
+GET    /api/clients
+POST   /api/clients
+GET    /api/invoices
+POST   /api/invoices
+PATCH  /api/invoices/:id/status
+DELETE /api/invoices/:id
+
+## Roadmap
+
+- PDF export for invoices
+- Email delivery via Nodemailer
+- Recurring invoices
+- Payment integration with M-Pesa
+
+## Author
+
+Carter - Self-taught full-stack developer based in Nairobi, Kenya.
+Building web apps, automation tools and dApps.
+GitHub: https://github.com/Carter254g
+
+## License
+
+MIT
