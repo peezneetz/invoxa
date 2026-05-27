@@ -1,11 +1,18 @@
-name: Deploy Invoxa Backend to Cloud Run
+name: Build & Deploy Invoxa to Cloud Run
 
 on:
   push:
     branches: [main]
 
+env:
+  GCP_REGION: asia-southeast2
+
 jobs:
-  deploy:
+  # ============================================================
+  # JOB 1: Deploy Backend
+  # ============================================================
+  deploy-backend:
+    name: Deploy Backend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,23 +23,67 @@ jobs:
 
       - uses: google-github-actions/setup-gcloud@v2
 
-      - run: gcloud auth configure-docker asia-southeast2-docker.pkg.dev
+      - run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
 
-      - name: Build & Push Image
+      - name: Run database migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/invoxa-backend"
           cd server
-          docker build -t $IMAGE:$GITHUB_SHA .
-          docker push $IMAGE:$GITHUB_SHA
+          npm ci
+          npm run migrate
 
-      - name: Deploy to Cloud Run
+      - name: Build & Push Backend Image
         run: |
-          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/invoxa-backend"
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/backend"
+          cd server
+          docker build -t $IMAGE:${{ github.sha }} .
+          docker push $IMAGE:${{ github.sha }}
+
+      - name: Deploy Backend to Cloud Run
+        run: |
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/backend"
           gcloud run deploy invoxa-backend \
-            --image=$IMAGE:$GITHUB_SHA \
+            --image=$IMAGE:${{ github.sha }} \
             --platform=managed \
-            --region=asia-southeast2 \
+            --region=${{ env.GCP_REGION }} \
             --allow-unauthenticated \
             --port=5000 \
             --memory=512Mi \
-            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }}"
+            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRES_IN=7d,NODE_ENV=production"
+
+  # ============================================================
+  # JOB 2: Deploy Frontend (No changes to your Dockerfile)
+  # ============================================================
+  deploy-frontend:
+    name: Deploy Frontend
+    runs-on: ubuntu-latest
+    needs: deploy-backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
+
+      - name: Build & Push Frontend Image
+        run: |
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/frontend"
+          cd client
+          docker build -t $IMAGE:${{ github.sha }} .
+          docker push $IMAGE:${{ github.sha }}
+
+      - name: Deploy Frontend to Cloud Run
+        run: |
+          IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/frontend"
+          gcloud run deploy invoxa-frontend \
+            --image=$IMAGE:${{ github.sha }} \
+            --platform=managed \
+            --region=${{ env.GCP_REGION }} \
+            --allow-unauthenticated \
+            --port=80 \
+            --memory=256Mi
