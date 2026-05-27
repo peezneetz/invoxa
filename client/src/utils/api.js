@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://invoxa-backend-xxxxx-uc.a.run.app/api',
+  baseURL: 'https://invoxa-backend-942154906460.asia-southeast2.run.app/api',
 });
 
 api.interceptors.request.use((config) => {
