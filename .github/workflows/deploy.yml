@@ -50,7 +50,7 @@ jobs:
             --allow-unauthenticated \
             --port=5000 \
             --memory=512Mi \
-            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRES_IN=7d,NODE_ENV=production"
+            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRES_IN=7d,NODE_ENV=production,CLIENT_URL=https://invoxa-frontend-942154906460.asia-southeast2.run.app"
 
   # ============================================================
   # JOB 2: Deploy Frontend (No changes to your Dockerfile)
