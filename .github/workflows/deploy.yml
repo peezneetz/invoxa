@@ -20,14 +20,14 @@ jobs:
 
       - name: Build & Push Image
         run: |
-          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa-repo/invoxa-backend"
+          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/invoxa-backend"
           cd server
           docker build -t $IMAGE:$GITHUB_SHA .
           docker push $IMAGE:$GITHUB_SHA
 
       - name: Deploy to Cloud Run
         run: |
-          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa-repo/invoxa-backend"
+          IMAGE="asia-southeast2-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/invoxa-backend"
           gcloud run deploy invoxa-backend \
             --image=$IMAGE:$GITHUB_SHA \
             --platform=managed \
