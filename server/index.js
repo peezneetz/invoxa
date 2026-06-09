@@ -23,7 +23,7 @@ app.use(cors({
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'Invoxa API is running', timestamp: new Date() });
+  res.json({ status: 'ok', message: 'DevOps pipeline test - ' + new Date().toISOString(), timestamp: new Date() });
 });
 
 app.use('/api/auth', authRoutes);
