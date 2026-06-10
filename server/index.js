@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', process.env.CLIENT_URL],
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'https://invoxa-frontend-942154906460.asia-southeast2.run.app', process.env.CLIENT_URL],
   credentials: true,
 }));
 app.use(express.json());
