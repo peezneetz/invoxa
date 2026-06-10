@@ -1,4 +1,4 @@
-name: Build & Deploy Invoxa to Cloud Run
+name: Build & Deploy to Cloud Run
 
 on:
   push:
@@ -8,19 +8,37 @@ env:
   GCP_REGION: asia-southeast2
 
 jobs:
+  wait-for-test:
+    name: Wait for Tests to Pass
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for testing workflow to succeed
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.ref }}
+          check-name: 'test-backend'           # Must match the name in ci.yml
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10                    # Check every 10 seconds
+          allowed-conclusions: success         # Only proceed if successful
+
   deploy-backend:
     name: Deploy Backend
     runs-on: ubuntu-latest
+    needs: wait-for-test
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: google-github-actions/auth@v2
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - uses: google-github-actions/setup-gcloud@v2
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
 
-      - run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
 
       - name: Run database migrations
         env:
@@ -35,7 +53,9 @@ jobs:
           IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/backend"
           cd server
           docker build -t $IMAGE:${{ github.sha }} .
+          docker build -t $IMAGE:latest .
           docker push $IMAGE:${{ github.sha }}
+          docker push $IMAGE:latest
 
       - name: Deploy Backend to Cloud Run
         run: |
@@ -47,29 +67,36 @@ jobs:
             --allow-unauthenticated \
             --port=5000 \
             --memory=512Mi \
-            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRES_IN=7d,NODE_ENV=production,CLIENT_URL=https://invoxa-frontend-942154906460.asia-southeast2.run.app"
+            --cpu=1 \
+            --set-env-vars="DATABASE_URL=${{ secrets.DATABASE_URL }},JWT_SECRET=${{ secrets.JWT_SECRET }},JWT_EXPIRES_IN=7d,NODE_ENV=production,CLIENT_URL=${{ vars.CLIENT_URL || secrets.CLIENT_URL }}"
 
   deploy-frontend:
     name: Deploy Frontend
     runs-on: ubuntu-latest
-    needs: deploy-backend
+    needs: [wait-for-test, deploy-backend]
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: google-github-actions/auth@v2
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS }}
 
-      - uses: google-github-actions/setup-gcloud@v2
+      - name: Setup gcloud CLI
+        uses: google-github-actions/setup-gcloud@v2
 
-      - run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker ${{ env.GCP_REGION }}-docker.pkg.dev
 
       - name: Build & Push Frontend Image
         run: |
           IMAGE="${{ env.GCP_REGION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/invoxa/frontend"
           cd client
           docker build -t $IMAGE:${{ github.sha }} .
+          docker build -t $IMAGE:latest .
           docker push $IMAGE:${{ github.sha }}
+          docker push $IMAGE:latest
 
       - name: Deploy Frontend to Cloud Run
         run: |
@@ -80,4 +107,5 @@ jobs:
             --region=${{ env.GCP_REGION }} \
             --allow-unauthenticated \
             --port=80 \
-            --memory=256Mi
+            --memory=256Mi \
+            --cpu=1
