@@ -1,0 +1,28 @@
+{
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
+  "name": "invoxa",
+  "version": "1.0.0",
+  "description": "A full-stack invoice management web app for freelancers and small businesses.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peezneetz/invoxa.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/peezneetz/invoxa/issues"
+  },
+  "homepage": "https://github.com/peezneetz/invoxa#readme"
+}
