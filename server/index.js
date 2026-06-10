@@ -2,8 +2,6 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const x = ;
-
 const authRoutes = require('./routes/auth');
 const clientRoutes = require('./routes/clients');
 const invoiceRoutes = require('./routes/invoices');
@@ -13,21 +11,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'https://invoxa-eta.vercel.app',
-    process.env.CLIENT_URL,
-  ],
+  origin: ['http://localhost:5173', 'http://localhost:5174', process.env.CLIENT_URL],
   credentials: true,
 }));
-
 app.use(express.json());
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', message: 'DevOps pipeline test - ' + new Date().toISOString(), timestamp: new Date() });
+  res.json({ status: 'ok', message: 'Invoxa API is running', timestamp: new Date() });
 });
-
 app.use('/api/auth', authRoutes);
 app.use('/api/clients', clientRoutes);
 app.use('/api/invoices', invoiceRoutes);
@@ -41,8 +32,15 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-migrate.createTables().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+module.exports = app;
+
+if (require.main === module) {
+  migrate.createTables().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  }).catch(err => {
+    console.error('Migration failed:', err);
+    process.exit(1);
   });
-});
+}
