@@ -7,12 +7,14 @@
     "start": "node index.js",
     "dev": "nodemon index.js",
     "migrate": "node db/migrate.js",
-    "test": "jest",
+    "test": "jest --testMatch='**/*.test.js' --testMatch='**/*.unit.test.js' --runInBand --forceExit",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:auth": "jest routes/auth.test.js --runInBand --forceExit",
     "test:clients": "jest routes/clients.test.js --runInBand --forceExit",
-    "test:invoices": "jest routes/invoices.test.js --runInBand --forceExit"
+    "test:invoices": "jest routes/invoices.test.js --runInBand --forceExit",
+    "test:unit:clients": "jest controllers/clients.unit.test.js --runInBand --forceExit",
+    "test:unit:auth": "jest controllers/auth.unit.test.js --runInBand --forceExit"
   },
   "keywords": [],
   "author": "Carter254g",

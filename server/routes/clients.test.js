@@ -29,13 +29,10 @@ describe('Clients API Tests', () => {
 
   describe('GET /api/clients/:id', () => {
     test('Should return 404 when client does not exist (with UUID format)', async () => {
-      // Use a valid UUID format that doesn't exist
       const fakeUUID = '00000000-0000-0000-0000-000000000000';
       const response = await request(app)
         .get(`/api/clients/${fakeUUID}`);
       
-      // Without auth, returns 401. With auth but no client, returns 404.
-      // Since we're mocking, it might return 401 or 404
       expect([401, 404]).toContain(response.status);
     });
   });

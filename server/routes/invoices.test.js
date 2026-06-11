@@ -1,15 +1,10 @@
-// server/routes/invoices.test.js
 const request = require('supertest');
 const app = require('../index');
 
-// Mock the database
 jest.mock('pg');
 
 describe('Invoices API Tests', () => {
   
-  // ============================================================
-  // GET /api/invoices - Fetch all invoices
-  // ============================================================
   describe('GET /api/invoices', () => {
     
     test('Should return 401 when no authentication token is provided', async () => {
@@ -30,9 +25,6 @@ describe('Invoices API Tests', () => {
     });
   });
 
-  // ============================================================
-  // POST /api/invoices - Create a new invoice
-  // ============================================================
   describe('POST /api/invoices', () => {
     
     test('Should return 401 when no authentication token is provided', async () => {
@@ -52,7 +44,6 @@ describe('Invoices API Tests', () => {
         .post('/api/invoices')
         .send({});
       
-      // With mock DB, returns 401 first. With real auth, would return 400
       expect([400, 401]).toContain(response.status);
     });
   });
