@@ -11,6 +11,8 @@
     "doc": "docs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/node": "^25.9.3",
     "jest": "^30.4.2"
   },
   "repository": {

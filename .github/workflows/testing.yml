@@ -31,7 +31,7 @@ jobs:
           NODE_ENV: test
           JWT_SECRET: test-secret-do-not-use-in-production
 
-      - name: Upload test results (if needed)
+      - name: Upload test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -88,5 +88,37 @@ jobs:
           docker build -t invoxa-frontend-test .
 
       - name: Verify images were created
-        run: |
-          docker images | grep invoxa
+        run: docker images | grep invoxa
+
+  test-e2e:
+    name: End-to-End Tests
+    runs-on: ubuntu-latest
+    needs: docker-build-test
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies (root)
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright E2E tests
+        run: npx playwright test
+        env:
+          BASE_URL: https://invoxa-frontend-942154906460.asia-southeast2.run.app
+
+      - name: Upload Playwright test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

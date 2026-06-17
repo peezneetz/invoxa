@@ -1,6 +1,3 @@
-// server/controllers/auth.unit.test.js
-
-// Mock BEFORE importing
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 jest.mock('../db', () => ({
@@ -118,9 +115,7 @@ describe('Auth Controller - Unit Tests', () => {
       jwt.sign.mockReturnValue('fake-token');
       
       await login(req, res);
-      
-      // Don't check res.status – Express defaults to 200
-      // Check that json was called with correct data
+
       expect(res.json).toHaveBeenCalledWith({
         token: 'fake-token',
         user: {

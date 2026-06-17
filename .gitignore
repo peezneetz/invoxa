@@ -4,3 +4,10 @@ dist/
 build/
 .DS_Store
 *.log
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

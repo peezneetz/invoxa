@@ -1,6 +1,3 @@
-// server/controllers/clients.unit.test.js
-
-// Mock BEFORE importing
 jest.mock('../db', () => ({
     query: jest.fn(),
   }));
@@ -18,7 +15,7 @@ jest.mock('../db', () => ({
       req = {
         body: {},
         params: {},
-        user: { id: 1 }, // Mock authenticated user
+        user: { id: 1 },
       };
       
       res = {
@@ -33,9 +30,6 @@ jest.mock('../db', () => ({
       jest.restoreAllMocks();
     });
   
-    // ============================================================
-    // GET CLIENTS TESTS
-    // ============================================================
     describe('getClients', () => {
       test('should return all clients for the authenticated user', async () => {
         const mockClients = [
@@ -72,9 +66,6 @@ jest.mock('../db', () => ({
       });
     });
   
-    // ============================================================
-    // CREATE CLIENT TESTS
-    // ============================================================
     describe('createClient', () => {
       test('should return 400 if name is missing', async () => {
         req.body = { email: 'test@test.com', phone: '123456', address: '123 St' };
@@ -143,9 +134,6 @@ jest.mock('../db', () => ({
       });
     });
   
-    // ============================================================
-    // UPDATE CLIENT TESTS
-    // ============================================================
     describe('updateClient', () => {
       test('should return 404 if client not found', async () => {
         req.params = { id: 999 };
@@ -200,9 +188,6 @@ jest.mock('../db', () => ({
       });
     });
   
-    // ============================================================
-    // DELETE CLIENT TESTS
-    // ============================================================
     describe('deleteClient', () => {
       test('should return 404 if client not found', async () => {
         req.params = { id: 999 };
